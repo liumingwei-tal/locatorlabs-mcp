@@ -18,11 +18,18 @@ An MCP (Model Context Protocol) server that provides smart locator generation fo
 
 | Feature | Description |
 |---------|-------------|
-| 🎯 **Get Locators** | Get all possible locators for any element with reliability rankings |
+| 🎯 **Get Locators** | Get all possible locators for any element (Playwright + Selenium formats) |
 | 📊 **Analyze Page** | Scan pages and identify all interactive elements |
-| 🏗️ **Generate POM** | Auto-generate Page Object classes (TypeScript/JavaScript/Python) |
+| 🏗️ **Generate POM** | Auto-generate Page Object classes for **Playwright** & **Selenium** |
 | ✅ **Run Tests** | Execute Playwright tests and get pass/fail results |
 | 📝 **Generate Tests** | Create executable test scripts |
+
+## 🔧 Supported Frameworks
+
+| Framework | Locators | Page Object Model |
+|-----------|----------|-------------------|
+| **Playwright** | ✅ `getByRole`, `getByTestId`, etc. | ✅ TypeScript, JavaScript, Python |
+| **Selenium** | ✅ `By.id`, `By.xpath`, `By.cssSelector` | ✅ Java, Python, C# |
 
 ## 🚀 Quick Start
 
@@ -121,7 +128,15 @@ Just chat naturally:
 
 ### Generate Page Object Model
 
+**Playwright:**
 > "Generate a TypeScript Page Object for https://www.saucedemo.com and call it LoginPage"
+
+**Selenium:**
+> "Generate a Java Selenium Page Object for https://www.saucedemo.com and call it LoginPage"
+
+> "Generate a C# Selenium Page Object for https://www.saucedemo.com called LoginPage"
+
+> "Generate a Python Selenium POM for https://www.saucedemo.com named LoginPage"
 
 ### Run a Test
 
@@ -145,11 +160,22 @@ Just chat naturally:
 
 | Tool | Description |
 |------|-------------|
-| `get_locators` | Get all possible locators for a specific element |
+| `get_locators` | Get all possible locators (Playwright + Selenium formats) |
 | `analyze_page` | List all interactive elements on a page |
-| `generate_page_object` | Create POM class (TypeScript/JavaScript/Python) |
+| `generate_page_object` | Create POM class (Playwright: TS/JS/Python, Selenium: Java/Python/C#) |
 | `run_test` | Execute tests in real browser, get pass/fail |
 | `generate_test` | Generate executable test scripts |
+
+## 📦 Supported Languages for Page Objects
+
+| Language | Framework | Example Output |
+|----------|-----------|----------------|
+| `typescript` | Playwright | `page.getByRole('button')` |
+| `javascript` | Playwright | `page.getByRole('button')` |
+| `python` | Playwright | `page.get_by_role('button')` |
+| `java-selenium` | Selenium | `@FindBy(id = "btn")` |
+| `python-selenium` | Selenium | `By.ID, "btn"` |
+| `csharp-selenium` | Selenium | `[FindsBy(How = How.Id)]` |
 
 ## 🎯 Supported Test Actions
 
@@ -192,7 +218,9 @@ LocatorLabs ranks locators by reliability:
 |---------|----------------|-----------------|
 | Get all locators for element | ❌ | ✅ |
 | Locator reliability ranking | ❌ | ✅ |
-| Generate Page Object Model | ❌ | ✅ |
+| Selenium locator format | ❌ | ✅ |
+| Generate Playwright POM | ❌ | ✅ |
+| Generate Selenium POM (Java/C#/Python) | ❌ | ✅ |
 | Run tests with pass/fail | ❌ | ✅ |
 | Browser automation | ✅ | ✅ |
 | Device emulation | ✅ | ❌ |
@@ -241,7 +269,7 @@ Contributions welcome! Please open an issue or PR on GitHub.
 
 **Naveen AutomationLabs**
 
-- YouTube: [@naveenautomationlabs](https://www.youtube.com/@naveenautomationlabs/) (415K+ subscribers)
+- YouTube: [@naveenautomationlabs](https://www.youtube.com/@naveenautomationlabs) (500K+ subscribers)
 - Website: [naveenautomationlabs.com](https://naveenautomationlabs.com)
 - LinkedIn: [Naveen AutomationLabs](https://linkedin.com/in/naveenkhunteta)
 
@@ -251,4 +279,3 @@ MIT
 
 ---
 
-Made with ❤️ for the test automation community

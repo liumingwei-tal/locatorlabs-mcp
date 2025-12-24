@@ -60,7 +60,7 @@ const tools: Tool[] = [
   {
     name: "generate_page_object",
     description:
-      "Generate a complete Page Object Model class for a webpage with all interactive elements and helper methods. Returns production-ready code.",
+      "Generate a complete Page Object Model class for a webpage. Supports Playwright (TypeScript/JavaScript/Python) and Selenium (Java/Python/C#).",
     inputSchema: {
       type: "object",
       properties: {
@@ -74,8 +74,8 @@ const tools: Tool[] = [
         },
         language: {
           type: "string",
-          enum: ["typescript", "javascript", "python"],
-          description: "Programming language for the generated code (default: typescript)",
+          enum: ["typescript", "javascript", "python", "java-selenium", "python-selenium", "csharp-selenium"],
+          description: "Programming language: typescript, javascript, python (Playwright) OR java-selenium, python-selenium, csharp-selenium (Selenium)",
         },
       },
       required: ["url", "className"],
@@ -316,7 +316,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         const { url, className, language = "typescript" } = args as {
           url: string;
           className: string;
-          language?: "typescript" | "javascript" | "python";
+          language?: "typescript" | "javascript" | "python" | "java-selenium" | "python-selenium" | "csharp-selenium";
         };
         console.error(`[LocatorLabs] Generating POM "${className}" for ${url} in ${language}`);
         const tool = await getGeneratePOMTool();
