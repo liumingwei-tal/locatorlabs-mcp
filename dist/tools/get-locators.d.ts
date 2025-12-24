@@ -1,3 +1,11 @@
+/**
+ * Get Locators Tool - Generate all possible locators for elements
+ *
+ * @author Naveen AutomationLabs
+ * @license MIT
+ * @date 2025
+ * @see https://github.com/naveenanimation20/locatorlabs-mcp
+ */
 import { BrowserManager } from "../core/browser.js";
 export interface ElementInfo {
     tagName: string;
@@ -22,12 +30,25 @@ export interface LocatorResult {
     reliability: number;
     description: string;
 }
-export interface GetLocatorsResult {
+export interface SeleniumLocator {
+    java: string;
+    python: string;
+    csharp: string;
+}
+interface GetLocatorsResult {
     url: string;
     elementDescription: string;
     matchedElements: number;
     locators: LocatorResult[];
     recommended: string;
+    playwright: {
+        recommended: string;
+        all: string[];
+    };
+    selenium: {
+        recommended: SeleniumLocator;
+        all: SeleniumLocator[];
+    };
     alternativeSelectors: {
         css: string;
         xpath: string;
@@ -43,5 +64,7 @@ export declare class GetLocatorsTool {
     private inferRole;
     private rankLocators;
     private escape;
+    private generateSeleniumLocators;
 }
+export {};
 //# sourceMappingURL=get-locators.d.ts.map

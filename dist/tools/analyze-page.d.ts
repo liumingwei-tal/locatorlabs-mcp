@@ -1,3 +1,11 @@
+/**
+ * Analyze Page Tool - Scan pages and identify interactive elements
+ *
+ * @author Naveen AutomationLabs
+ * @license MIT
+ * @date 2025
+ * @see https://github.com/naveenanimation20/locatorlabs-mcp
+ */
 import { BrowserManager } from "../core/browser.js";
 export interface ElementInfo {
     tagName: string;

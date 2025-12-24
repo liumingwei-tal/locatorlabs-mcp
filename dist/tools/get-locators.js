@@ -1,4 +1,12 @@
 "use strict";
+/**
+ * Get Locators Tool - Generate all possible locators for elements
+ *
+ * @author Naveen AutomationLabs
+ * @license MIT
+ * @date 2025
+ * @see https://github.com/naveenanimation20/locatorlabs-mcp
+ */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GetLocatorsTool = void 0;
 const MAX_TEXT_LENGTH = 100;
@@ -18,6 +26,14 @@ class GetLocatorsTool {
                 matchedElements: 0,
                 locators: [],
                 recommended: "No matching elements found. Try a different description.",
+                playwright: {
+                    recommended: "",
+                    all: [],
+                },
+                selenium: {
+                    recommended: { java: "", python: "", csharp: "" },
+                    all: [],
+                },
                 alternativeSelectors: {
                     css: "",
                     xpath: "",
@@ -28,12 +44,22 @@ class GetLocatorsTool {
         const element = elements[0];
         const locators = this.generateLocators(element);
         const ranked = this.rankLocators(locators).slice(0, MAX_LOCATORS);
+        // Generate Selenium locators
+        const seleniumLocators = this.generateSeleniumLocators(element);
         return {
             url,
             elementDescription,
             matchedElements: elements.length,
             locators: ranked,
             recommended: ranked[0]?.locator || "No locator found",
+            playwright: {
+                recommended: ranked[0]?.locator || "",
+                all: ranked.map((l) => l.locator),
+            },
+            selenium: {
+                recommended: seleniumLocators[0] || { java: "", python: "", csharp: "" },
+                all: seleniumLocators,
+            },
             alternativeSelectors: {
                 css: element.selector,
                 xpath: element.xpath,
@@ -301,6 +327,67 @@ class GetLocatorsTool {
             .replace(/\\/g, "\\\\")
             .replace(/'/g, "\\'")
             .substring(0, MAX_TEXT_LENGTH);
+    }
+    generateSeleniumLocators(el) {
+        const locators = [];
+        // ID (highest priority for Selenium)
+        if (el.id) {
+            locators.push({
+                java: `By.id("${el.id}")`,
+                python: `By.ID, "${el.id}"`,
+                csharp: `By.Id("${el.id}")`,
+            });
+        }
+        // Name attribute
+        if (el.name) {
+            locators.push({
+                java: `By.name("${el.name}")`,
+                python: `By.NAME, "${el.name}"`,
+                csharp: `By.Name("${el.name}")`,
+            });
+        }
+        // CSS Selector
+        if (el.selector) {
+            locators.push({
+                java: `By.cssSelector("${el.selector}")`,
+                python: `By.CSS_SELECTOR, "${el.selector}"`,
+                csharp: `By.CssSelector("${el.selector}")`,
+            });
+        }
+        // XPath
+        if (el.xpath) {
+            locators.push({
+                java: `By.xpath("${el.xpath}")`,
+                python: `By.XPATH, "${el.xpath}"`,
+                csharp: `By.XPath("${el.xpath}")`,
+            });
+        }
+        // Link Text (for anchor tags)
+        if (el.tagName === "a" && el.text) {
+            locators.push({
+                java: `By.linkText("${this.escape(el.text)}")`,
+                python: `By.LINK_TEXT, "${this.escape(el.text)}"`,
+                csharp: `By.LinkText("${this.escape(el.text)}")`,
+            });
+        }
+        // Class Name (first class only)
+        if (el.className) {
+            const firstClass = el.className.split(" ")[0];
+            if (firstClass && !firstClass.includes(":")) {
+                locators.push({
+                    java: `By.className("${firstClass}")`,
+                    python: `By.CLASS_NAME, "${firstClass}"`,
+                    csharp: `By.ClassName("${firstClass}")`,
+                });
+            }
+        }
+        // Tag Name (lowest priority)
+        locators.push({
+            java: `By.tagName("${el.tagName}")`,
+            python: `By.TAG_NAME, "${el.tagName}"`,
+            csharp: `By.TagName("${el.tagName}")`,
+        });
+        return locators;
     }
 }
 exports.GetLocatorsTool = GetLocatorsTool;

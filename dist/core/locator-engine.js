@@ -1,4 +1,12 @@
 "use strict";
+/**
+ * Locator Engine - Core locator generation logic for LocatorLabs MCP
+ *
+ * @author Naveen AutomationLabs
+ * @license MIT
+ * @date 2025
+ * @see https://github.com/naveenanimation20/locatorlabs-mcp
+ */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LocatorEngine = void 0;
 class LocatorEngine {

@@ -1,4 +1,12 @@
 "use strict";
+/**
+ * Test Runner - Core test execution engine for LocatorLabs MCP
+ *
+ * @author Naveen AutomationLabs
+ * @license MIT
+ * @date 2025
+ * @see https://github.com/naveenanimation20/locatorlabs-mcp
+ */
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);

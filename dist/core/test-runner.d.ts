@@ -1,3 +1,11 @@
+/**
+ * Test Runner - Core test execution engine for LocatorLabs MCP
+ *
+ * @author Naveen AutomationLabs
+ * @license MIT
+ * @date 2025
+ * @see https://github.com/naveenanimation20/locatorlabs-mcp
+ */
 export interface TestStep {
     action: "navigate" | "click" | "fill" | "assert_visible" | "assert_text" | "screenshot" | "wait";
     locator?: string;

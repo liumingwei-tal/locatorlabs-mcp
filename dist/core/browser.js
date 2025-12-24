@@ -1,4 +1,12 @@
 "use strict";
+/**
+ * Browser Manager - Handles browser lifecycle for LocatorLabs MCP
+ *
+ * @author Naveen AutomationLabs
+ * @license MIT
+ * @date 2025
+ * @see https://github.com/naveenanimation20/locatorlabs-mcp
+ */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BrowserManager = void 0;
 const playwright_1 = require("playwright");

@@ -26,7 +26,7 @@ export interface ElementInfo {
   testId?: string;
 }
 
-export export interface PageElementProperty {
+export interface PageElementProperty {
   propertyName: string;
   locator: string;
   elementType: string;

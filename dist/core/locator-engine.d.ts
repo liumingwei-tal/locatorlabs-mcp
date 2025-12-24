@@ -1,3 +1,11 @@
+/**
+ * Locator Engine - Core locator generation logic for LocatorLabs MCP
+ *
+ * @author Naveen AutomationLabs
+ * @license MIT
+ * @date 2025
+ * @see https://github.com/naveenanimation20/locatorlabs-mcp
+ */
 import { BrowserManager } from "./browser.js";
 interface LocatorResult {
     type: string;

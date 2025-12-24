@@ -1,5 +1,15 @@
 #!/usr/bin/env node
 "use strict";
+/**
+ * LocatorLabs MCP Server
+ *
+ * Intelligent Playwright & Selenium locator generation powered by AI
+ *
+ * @author Naveen AutomationLabs
+ * @license MIT
+ * @date 2025
+ * @see https://github.com/naveenanimation20/locatorlabs-mcp
+ */
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_js_1 = require("@modelcontextprotocol/sdk/server/index.js");
 const stdio_js_1 = require("@modelcontextprotocol/sdk/server/stdio.js");
@@ -50,7 +60,7 @@ const tools = [
     },
     {
         name: "generate_page_object",
-        description: "Generate a complete Page Object Model class for a webpage with all interactive elements and helper methods. Returns production-ready code.",
+        description: "Generate a complete Page Object Model class for a webpage. Supports Playwright (TypeScript/JavaScript/Python) and Selenium (Java/Python/C#).",
         inputSchema: {
             type: "object",
             properties: {
@@ -64,8 +74,8 @@ const tools = [
                 },
                 language: {
                     type: "string",
-                    enum: ["typescript", "javascript", "python"],
-                    description: "Programming language for the generated code (default: typescript)",
+                    enum: ["typescript", "javascript", "python", "java-selenium", "python-selenium", "csharp-selenium"],
+                    description: "Programming language: typescript, javascript, python (Playwright) OR java-selenium, python-selenium, csharp-selenium (Selenium)",
                 },
             },
             required: ["url", "className"],

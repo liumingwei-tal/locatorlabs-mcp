@@ -1,3 +1,11 @@
+/**
+ * Run Test Tool - Execute Playwright tests with pass/fail results
+ *
+ * @author Naveen AutomationLabs
+ * @license MIT
+ * @date 2025
+ * @see https://github.com/naveenanimation20/locatorlabs-mcp
+ */
 export interface TestStep {
     action: "navigate" | "click" | "fill" | "clear" | "check" | "uncheck" | "select" | "hover" | "press" | "assert_visible" | "assert_hidden" | "assert_text" | "assert_value" | "assert_url" | "assert_title" | "wait" | "wait_for_element" | "screenshot";
     locator?: string;
