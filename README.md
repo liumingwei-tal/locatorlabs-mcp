@@ -8,11 +8,22 @@ An MCP (Model Context Protocol) server that provides smart locator generation fo
 
 [![npm version](https://badge.fury.io/js/locatorlabs-mcp.svg)](https://www.npmjs.com/package/locatorlabs-mcp)
 
-### ⚡ One-Click Install
+### ⚡ Quick Install
 
-[<img src="https://img.shields.io/badge/Install_in_VS_Code-007ACC?style=for-the-badge&logo=visualstudiocode&logoColor=white" alt="Install in VS Code">](https://insiders.vscode.dev/redirect?url=vscode://ms-vscode.mcp/install?name=locatorlabs%26command=npx%26args=-y,locatorlabs-mcp)
+**VS Code (v1.99+):**
+```bash
+code --add-mcp '{"name":"locatorlabs","command":"npx","args":["-y","locatorlabs-mcp"]}'
+```
 
-[<img src="https://img.shields.io/badge/Install_in_Cursor-000000?style=for-the-badge&logo=cursor&logoColor=white" alt="Install in Cursor">](cursor://anysphere.cursor-mcp/install?name=locatorlabs&config=%7B%22command%22%3A%22npx%22%2C%22args%22%3A%5B%22-y%22%2C%22locatorlabs-mcp%22%5D%7D)
+**Cursor:**
+```bash
+cursor --add-mcp '{"name":"locatorlabs","command":"npx","args":["-y","locatorlabs-mcp"]}'
+```
+
+**Windows PowerShell:**
+```powershell
+code --add-mcp '{\"name\":\"locatorlabs\",\"command\":\"npx\",\"args\":[\"-y\",\"locatorlabs-mcp\"]}'
+```
 
 ## ✨ Features
 
