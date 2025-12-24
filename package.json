@@ -1,0 +1,62 @@
+{
+  "name": "locatorlabs-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for intelligent Playwright locator generation - Get locators, analyze pages, generate POMs, and run tests",
+  "main": "dist/index.js",
+  "bin": {
+    "locatorlabs-mcp": "./bin/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "prepublishOnly": "npm run build",
+    "test": "echo \"No tests yet\""
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "playwright",
+    "locators",
+    "test-automation",
+    "page-object-model",
+    "claude",
+    "ai",
+    "selenium",
+    "testing",
+    "web-automation",
+    "e2e-testing"
+  ],
+  "author": {
+    "name": "Naveen AutomationLabs",
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/naveenanimation20/locatorlabs-mcp.git"
+  },
+  "homepage": "https://github.com/naveenanimation20/locatorlabs-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/naveenanimation20/locatorlabs-mcp/issues"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "playwright": "^1.40.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.0",
+    "ts-node": "^10.9.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}
