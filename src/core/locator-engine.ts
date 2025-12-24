@@ -1,3 +1,12 @@
+/**
+ * Locator Engine - Core locator generation logic for LocatorLabs MCP
+ *
+ * @author Naveen AutomationLabs
+ * @license MIT
+ * @date 2024
+ * @see https://github.com/naveenanimation20/locatorlabs-mcp
+ */
+
 import { Page, Locator } from "playwright";
 import { BrowserManager } from "./browser.js";
 

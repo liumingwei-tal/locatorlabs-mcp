@@ -1,3 +1,12 @@
+/**
+ * Run Test Tool - Execute Playwright tests with pass/fail results
+ *
+ * @author Naveen AutomationLabs
+ * @license MIT
+ * @date 2024
+ * @see https://github.com/naveenanimation20/locatorlabs-mcp
+ */
+
 import { chromium, Browser, Page, Locator } from "playwright";
 import * as fs from "fs";
 import * as path from "path";

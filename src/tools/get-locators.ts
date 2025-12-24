@@ -1,3 +1,12 @@
+/**
+ * Get Locators Tool - Generate all possible locators for elements
+ *
+ * @author Naveen AutomationLabs
+ * @license MIT
+ * @date 2024
+ * @see https://github.com/naveenanimation20/locatorlabs-mcp
+ */
+
 import { Page } from "playwright";
 import { BrowserManager } from "../core/browser.js";
 

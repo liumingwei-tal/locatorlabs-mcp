@@ -1,5 +1,16 @@
 #!/usr/bin/env node
 
+/**
+ * LocatorLabs MCP Server
+ *
+ * Intelligent Playwright & Selenium locator generation powered by AI
+ *
+ * @author Naveen AutomationLabs
+ * @license MIT
+ * @date 2024
+ * @see https://github.com/naveenanimation20/locatorlabs-mcp
+ */
+
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import {
