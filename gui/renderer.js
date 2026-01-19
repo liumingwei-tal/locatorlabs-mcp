@@ -384,7 +384,11 @@ function setupWebviewEvents(tabData) {
     if (activeTabId === id) {
       updateNavigationButtons();
     }
+  });
 
+  // 只有在页面完全加载完成后才开始检查消息
+  webview.addEventListener('did-finish-load', () => {
+    console.log('WebView页面加载完成，开始检查消息');
     // 开始检查来自webview的消息
     startMessageChecking();
   });
@@ -412,36 +416,58 @@ function setupWebviewEvents(tabData) {
   let messageCheckInterval = null;
 
   const checkForMessages = () => {
-    webview.executeJavaScript(`
-      (function() {
-        const messages = document.querySelectorAll('[id^="webview-message-"]');
-        if (messages.length > 0) {
-          const message = messages[0]; // 处理第一个消息
-          const result = {
-            id: message.id,
-            type: message.getAttribute('data-type'),
-            url: message.getAttribute('data-url')
-          };
-          // 移除已处理的消息
-          message.remove();
-          return result;
+    // 只有在webview准备好后才检查
+    if (!webview || !webview.getWebContentsId) {
+      return;
+    }
+
+    try {
+      webview.executeJavaScript(`
+        (function() {
+          try {
+            // 检查document是否可用
+            if (!document || !document.body) {
+              return null;
+            }
+
+            const messages = document.querySelectorAll('[id^="webview-message-"]');
+            if (messages.length > 0) {
+              const message = messages[0]; // 处理第一个消息
+              const result = {
+                id: message.id,
+                type: message.getAttribute('data-type'),
+                url: message.getAttribute('data-url')
+              };
+              // 移除已处理的消息
+              message.remove();
+              return result;
+            }
+            return null;
+          } catch (e) {
+            // 如果有任何错误，返回null
+            return null;
+          }
+        })()
+      `).then(result => {
+        if (result && result.id !== lastMessageId) {
+          lastMessageId = result.id;
+          console.log('收到来自webview的消息:', result);
+          if (result.type === 'create-new-tab') {
+            createTab(result.url);
+          }
         }
-        return null;
-      })()
-    `).then(result => {
-      if (result && result.id !== lastMessageId) {
-        lastMessageId = result.id;
-        console.log('收到来自webview的消息:', result);
-        if (result.type === 'create-new-tab') {
-          createTab(result.url);
+      }).catch(err => {
+        // 忽略执行错误，webview可能还没有加载完成或者代码有问题
+        // 只在非预期错误时才记录
+        if (err && err.message && !err.message.includes('WebView must be attached') &&
+            !err.message.includes('Cannot read property') &&
+            !err.message.includes('document is not defined')) {
+          console.log('检查消息时出错:', err);
         }
-      }
-    }).catch(err => {
-      // 忽略执行错误，webview可能还没有加载完成或者代码有问题
-      if (!err.message.includes('Cannot read property') && !err.message.includes('document is not defined')) {
-        console.log('检查消息时出错:', err);
-      }
-    });
+      });
+    } catch (err) {
+      // 忽略同步错误
+    }
   };
 
   const startMessageChecking = () => {
