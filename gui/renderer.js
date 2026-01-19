@@ -384,6 +384,9 @@ function setupWebviewEvents(tabData) {
     if (activeTabId === id) {
       updateNavigationButtons();
     }
+
+    // 开始检查来自webview的消息
+    startMessageChecking();
   });
 
   // 监听来自webview的消息
@@ -399,8 +402,15 @@ function setupWebviewEvents(tabData) {
     console.log('WebView控制台:', event.level, event.message);
   });
 
+  // 监听webview销毁，停止消息检查
+  webview.addEventListener('destroyed', () => {
+    stopMessageChecking();
+  });
+
   // 定期检查webview中的消息div
   let lastMessageId = null;
+  let messageCheckInterval = null;
+
   const checkForMessages = () => {
     webview.executeJavaScript(`
       (function() {
@@ -434,8 +444,22 @@ function setupWebviewEvents(tabData) {
     });
   };
 
-  // 每200ms检查一次消息（稍微降低频率以减少性能影响）
-  setInterval(checkForMessages, 200);
+  const startMessageChecking = () => {
+    if (messageCheckInterval) {
+      clearInterval(messageCheckInterval);
+    }
+    // 每200ms检查一次消息（稍微降低频率以减少性能影响）
+    messageCheckInterval = setInterval(checkForMessages, 200);
+    console.log('开始检查webview消息');
+  };
+
+  const stopMessageChecking = () => {
+    if (messageCheckInterval) {
+      clearInterval(messageCheckInterval);
+      messageCheckInterval = null;
+      console.log('停止检查webview消息');
+    }
+  };
   
   // 页面加载完成后也注入脚本（处理动态内容）
   webview.addEventListener('did-finish-load', () => {
