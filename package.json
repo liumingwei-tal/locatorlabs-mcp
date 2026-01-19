@@ -11,7 +11,9 @@
     "start": "node dist/index.js",
     "dev": "ts-node src/index.ts",
     "prepublishOnly": "npm run build",
-    "test": "echo \"No tests yet\""
+    "test": "echo \"No tests yet\"",
+    "gui": "electron gui/main.js",
+    "gui:dev": "electron gui/main.js"
   },
   "keywords": [
     "mcp",
@@ -45,6 +47,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.19.27",
+    "electron": "^28.0.0",
     "ts-node": "^10.9.0",
     "typescript": "^5.3.0"
   },
