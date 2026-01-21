@@ -11,7 +11,7 @@ function createWindow() {
       nodeIntegration: true,
       contextIsolation: false,
       webviewTag: true,
-      nativeWindowOpen: false, // 禁用原生窗口打开，使用webview
+      nativeWindowOpen: true, // 启用原生窗口打开拦截，这样才能被 setWindowOpenHandler 捕获
       nodeIntegrationInSubFrames: false // 禁止在子框架中使用node集成
     },
     titleBarStyle: 'default',
@@ -62,12 +62,27 @@ function createWindow() {
   });
 }
 
+// 监听所有 webview 创建的 webContents，拦截它们的新窗口请求
+app.on('web-contents-created', (event, contents) => {
+  if (contents.getType() === 'webview') {
+    contents.setWindowOpenHandler(({ url }) => {
+      // 发送消息到渲染进程，在新标签页中打开
+      if (mainWindow) {
+        mainWindow.webContents.send('load-url', url);
+      }
+      return { action: 'deny' }; // 阻止默认行为（打开新窗口）
+    });
+  }
+});
+
 app.whenReady().then(() => {
   createWindow();
 
   app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
+    // 不创建新窗口，只显示现有窗口（如果存在）
+    if (mainWindow) {
+      mainWindow.show();
+      mainWindow.focus();
     }
   });
 });

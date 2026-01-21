@@ -9,6 +9,9 @@
  * Renderer script - UI logic and element inspection
  */
 
+// 在顶层引入 electron，确保可用
+const { ipcRenderer } = require('electron');
+
 document.addEventListener('DOMContentLoaded', () => {
   // DOM Elements
   const urlInput = document.getElementById('urlInput');
@@ -145,6 +148,14 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
+    // 监听来自主进程的 load-url 消息（用于拦截新窗口）
+    ipcRenderer.on('load-url', (event, url) => {
+      console.log('Received load-url message:', url);
+      if (url) {
+        createNewTab(url);
+      }
+    });
+
     // Tab click and close handlers (delegated)
     tabsContainer.addEventListener('click', (e) => {
       const tab = e.target.closest('.tab');
@@ -165,6 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function createNewTab(url = 'about:blank') {
+    console.log('createNewTab called with url:', url);
     tabCounter++;
     const tabId = `tab-${tabCounter}`;
 
@@ -189,6 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const webviewElement = document.createElement('webview');
     webviewElement.id = `webview-${tabId}`;
     webviewElement.className = 'tab-webview';
+    // 允许弹出窗口事件，但通过 new-window 事件处理器控制行为
     webviewElement.setAttribute('allowpopups', '');
     webviewElement.src = url;
     webviewContainer.appendChild(webviewElement);
@@ -316,10 +329,39 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function setupWebviewEventsForTab(wv, tabId) {
+    // 先设置 new-window 事件监听器（在 dom-ready 之前）
+    wv.addEventListener('new-window', (e) => {
+      e.preventDefault();
+      // 在新标签页中打开链接
+      const url = e.url || e.targetUrl;
+      console.log('new-window event:', { url, event: e });
+      if (url) {
+        createNewTab(url);
+      }
+    });
+
     wv.addEventListener('dom-ready', () => {
       console.log(`Webview ${tabId} DOM ready`);
       if (tabId === activeTabId) {
         updateNavButtons();
+      }
+      
+      // 在 webview 的 webContents 上设置窗口打开处理器，阻止新窗口
+      try {
+        const webContents = wv.getWebContents();
+        if (webContents && webContents.setWindowOpenHandler) {
+          webContents.setWindowOpenHandler((details) => {
+            // 在新标签页中打开，而不是新窗口
+            const url = details.url;
+            console.log('webContents setWindowOpenHandler:', { url, details });
+            if (url) {
+              createNewTab(url);
+            }
+            return { action: 'deny' }; // 阻止默认行为（打开新窗口）
+          });
+        }
+      } catch (error) {
+        console.error(`Failed to set window open handler for ${tabId}:`, error);
       }
     });
 
@@ -346,6 +388,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showToast(`Failed to load: ${e.errorDescription}`, 'error');
       }
     });
+
 
     // Listen for messages from injected script
     wv.addEventListener('ipc-message', (event) => {
