@@ -1,383 +1,470 @@
+<!--
+  LocatorLabs Desktop
+
+  Copyright (c) 2025 Naveen AutomationLabs
+  Licensed under the MIT License
+
+  https://www.locator-labs.com
+-->
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LocatorLabs 浏览器客户端</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      background: #f5f5f5;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    .toolbar {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      padding: 15px 20px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      z-index: 1000;
-      flex-shrink: 0;
-    }
-
-    .logo {
-      font-size: 20px;
-      font-weight: bold;
-      color: white;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .url-container {
-      flex: 1;
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      background: white;
-      border-radius: 25px;
-      padding: 8px 15px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .url-input {
-      flex: 1;
-      border: none;
-      outline: none;
-      font-size: 14px;
-      padding: 5px 10px;
-      background: transparent;
-    }
-
-    .url-input::placeholder {
-      color: #999;
-    }
-
-    .nav-buttons {
-      display: flex;
-      gap: 8px;
-    }
-
-    .btn {
-      background: rgba(255, 255, 255, 0.2);
-      border: none;
-      color: white;
-      padding: 8px 15px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 14px;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .btn:hover {
-      background: rgba(255, 255, 255, 0.3);
-      transform: translateY(-1px);
-    }
-
-    .btn:active {
-      transform: translateY(0);
-    }
-
-    .btn-primary {
-      background: #4CAF50;
-      font-weight: 600;
-    }
-
-    .btn-primary:hover {
-      background: #45a049;
-    }
-
-    .btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .tabs-container {
-      background: #e8e8e8;
-      border-bottom: 1px solid #ccc;
-      display: flex;
-      align-items: flex-end;
-      padding: 0 10px;
-      overflow-x: auto;
-      overflow-y: hidden;
-      min-height: 40px;
-      flex-shrink: 0;
-      gap: 5px;
-    }
-
-    .tabs-container::-webkit-scrollbar {
-      height: 4px;
-    }
-
-    .tabs-container::-webkit-scrollbar-thumb {
-      background: #999;
-      border-radius: 2px;
-    }
-
-    .tab {
-      background: #f5f5f5;
-      border: 1px solid #ccc;
-      border-bottom: none;
-      padding: 8px 15px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      min-width: 150px;
-      max-width: 250px;
-      border-radius: 8px 8px 0 0;
-      transition: all 0.2s ease;
-      position: relative;
-      margin-top: 5px;
-      height: auto;
-      min-height: 32px;
-    }
-
-    .tab:hover {
-      background: #fafafa;
-    }
-
-    .tab.active {
-      background: white;
-      border-color: #667eea;
-      border-bottom-color: white;
-      z-index: 10;
-      margin-bottom: -1px;
-    }
-
-    .tab-title {
-      flex: 1;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      font-size: 13px;
-      color: #333;
-    }
-
-    .tab-close {
-      background: transparent;
-      border: none;
-      color: #666;
-      cursor: pointer;
-      font-size: 16px;
-      line-height: 1;
-      padding: 0;
-      width: 18px;
-      height: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 3px;
-      transition: all 0.2s ease;
-    }
-
-    .tab-close:hover {
-      background: #ff4444;
-      color: white;
-    }
-
-    .tab-loading {
-      width: 12px;
-      height: 12px;
-      border: 2px solid #ddd;
-      border-top-color: #667eea;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    .new-tab-btn {
-      background: transparent;
-      border: none;
-      color: #666;
-      cursor: pointer;
-      font-size: 20px;
-      padding: 5px 10px;
-      margin-left: 5px;
-      border-radius: 4px;
-      transition: all 0.2s ease;
-    }
-
-    .new-tab-btn:hover {
-      background: #ddd;
-      color: #333;
-    }
-
-    .browser-container {
-      flex: 1;
-      position: relative;
-      background: white;
-      overflow: hidden;
-      min-height: 0;
-      width: 100%;
-    }
-
-    .webview-container {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      display: none;
-      z-index: 1;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-    }
-
-    .webview-container.active {
-      display: block;
-    }
-
-    .webview {
-      border: none;
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      width: 100% !important;
-      height: 100% !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      box-sizing: border-box !important;
-      background: white;
-      min-width: 0;
-      min-height: 0;
-    }
-    
-    /* 修复webview内部iframe的flex布局问题 */
-    .webview iframe {
-      flex: none !important;
-      width: 100% !important;
-      height: 100% !important;
-      border: 0 !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      position: absolute !important;
-      top: 0 !important;
-      left: 0 !important;
-      right: 0 !important;
-      bottom: 0 !important;
-    }
-
-    .loading {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-      color: #666;
-      display: none;
-    }
-
-    .loading.active {
-      display: block;
-    }
-
-    .spinner {
-      border: 4px solid #f3f3f3;
-      border-top: 4px solid #667eea;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 15px;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    .status-bar {
-      background: #f0f0f0;
-      padding: 8px 20px;
-      font-size: 12px;
-      color: #666;
-      border-top: 1px solid #ddd;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-shrink: 0;
-      min-height: 30px;
-    }
-
-    .status-text {
-      flex: 1;
-    }
-
-    .error-message {
-      background: #ffebee;
-      color: #c62828;
-      padding: 10px 20px;
-      border-left: 4px solid #c62828;
-      border-radius: 4px;
-      display: none;
-      position: absolute;
-      top: 60px;
-      left: 20px;
-      right: 20px;
-      z-index: 2000;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    }
-
-    .error-message.show {
-      display: block;
-    }
-  </style>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https: http:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline';">
+  <title>LocatorLabs</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="toolbar">
-    <div class="logo">
-      🌐 LocatorLabs 浏览器
-    </div>
-    <div class="url-container">
-      <input 
-        type="text" 
-        id="urlInput" 
-        class="url-input" 
-        placeholder="输入网址，例如: https://www.baidu.com"
-        autocomplete="off"
-      />
-      <div class="nav-buttons">
-        <button class="btn" id="backBtn" title="后退">◀</button>
-        <button class="btn" id="forwardBtn" title="前进">▶</button>
-        <button class="btn" id="reloadBtn" title="刷新">↻</button>
-        <button class="btn btn-primary" id="goBtn">前往</button>
+  <div class="app-container">
+    <!-- Sidebar Panel -->
+    <aside class="sidebar-panel" id="sidebarPanel">
+      <!-- Resize Handle -->
+      <div class="sidebar-resize-handle" id="sidebarResizeHandle"></div>
+      <!-- Header -->
+      <div class="sidebar-header">
+        <div class="header-content">
+          <div class="logo-section">
+            <span class="logo-icon">⚡</span>
+            <span class="logo-text">Locator Labs</span>
+          </div>
+          <div class="header-actions">
+            <button class="header-icon-btn po-cart-btn" id="poCartBtn" title="Page Object Cart">
+              <span class="po-cart-icon">📦</span>
+              <span class="po-cart-badge" id="poCartBadge">0</span>
+            </button>
+            <button class="header-icon-btn" id="themeToggle" title="Toggle Theme">
+              <span class="theme-icon">🌙</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Framework Toggle Tabs -->
+      <div class="framework-toggle" id="frameworkToggle">
+        <button class="framework-btn active" data-framework="playwright">
+          <img class="fw-icon" src="https://playwright.dev/img/playwright-logo.svg" alt="Playwright">
+          <span>Playwright</span>
+        </button>
+        <button class="framework-btn" data-framework="selenium">
+          <img class="fw-icon" src="https://selenium.dev/images/selenium_logo_square_green.png" alt="Selenium">
+          <span>Selenium</span>
+        </button>
+        <button class="framework-btn" data-framework="cypress">
+          <img class="fw-icon" src="https://www.cypress.io/images/layouts/cypress-logo.svg" alt="Cypress">
+          <span>Cypress</span>
+        </button>
+      </div>
+
+      <!-- Tool Selection Checkboxes -->
+      <div class="tool-selection-section">
+        <div class="tool-selection-header">
+          <span class="tool-icon">🔧</span>
+          <span class="tool-title">Show Code For:</span>
+        </div>
+        <div class="tool-checkboxes">
+          <label class="tool-checkbox-label">
+            <input type="checkbox" class="tool-checkbox" data-framework="playwright" checked>
+            <span class="tool-checkbox-custom"></span>
+            <img class="fw-icon" src="https://playwright.dev/img/playwright-logo.svg" alt="Playwright">
+            <span>Playwright</span>
+          </label>
+          <label class="tool-checkbox-label">
+            <input type="checkbox" class="tool-checkbox" data-framework="selenium" checked>
+            <span class="tool-checkbox-custom"></span>
+            <img class="fw-icon" src="https://selenium.dev/images/selenium_logo_square_green.png" alt="Selenium">
+            <span>Selenium</span>
+          </label>
+          <label class="tool-checkbox-label">
+            <input type="checkbox" class="tool-checkbox" data-framework="cypress" checked>
+            <span class="tool-checkbox-custom"></span>
+            <img class="fw-icon" src="https://www.cypress.io/images/layouts/cypress-logo.svg" alt="Cypress">
+            <span>Cypress</span>
+          </label>
+        </div>
+        <div class="tool-selection-hint" id="toolSelectionHint">Select at least one framework</div>
+      </div>
+
+      <!-- Language Toggle -->
+      <div class="language-toggle" id="languageToggle">
+        <button class="lang-btn active" data-lang="javascript" data-frameworks="playwright,cypress">
+          <img class="lang-icon" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" alt="TypeScript">
+          <span>JavaScript/TypeScript</span>
+        </button>
+        <button class="lang-btn" data-lang="python" data-frameworks="playwright,selenium">
+          <img class="lang-icon" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python">
+          <span>Python</span>
+        </button>
+        <button class="lang-btn" data-lang="java" data-frameworks="selenium">
+          <img class="lang-icon" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" alt="Java">
+          <span>Java</span>
+        </button>
+      </div>
+
+      <!-- Inspect Mode Toggle -->
+      <div class="inspect-toggle">
+        <button class="inspect-btn" id="inspectBtn">
+          <span class="inspect-icon">🎯</span>
+          <span>Start Inspecting</span>
+        </button>
+      </div>
+
+      <!-- Test Locator Section -->
+      <div class="test-locator-section">
+        <div class="section-header">
+          <span class="section-icon">🔍</span>
+          <span class="section-title">Test Locator</span>
+        </div>
+        <div class="test-locator-input-wrapper">
+          <input type="text" class="test-locator-input" id="testLocatorInput" placeholder="e.g., page.getByRole('textbox', { name: 'user' })" autocomplete="off">
+          <button class="test-locator-btn" id="testLocatorBtn" title="Test Locator">▶</button>
+          <button class="test-locator-reset-btn" id="testLocatorResetBtn" title="Reset">↺</button>
+          <div class="autocomplete-dropdown" id="autocompleteDropdown"></div>
+        </div>
+        <div class="test-locator-result" id="testLocatorResult"></div>
+      </div>
+
+      <!-- Element Info Card -->
+      <div class="element-info-card" id="elementInfo">
+        <div class="info-header">
+          <span class="info-icon">📦</span>
+          <span class="info-title">Selected Element</span>
+        </div>
+        <div class="info-content">
+          <div class="element-tag" id="elementTag">No element selected</div>
+          <div class="element-details" id="elementDetails"></div>
+          <div class="playwright-frame-info" id="playwrightFrameInfo"></div>
+          <div class="frame-switch-info" id="frameSwitchInfo"></div>
+          <div class="shadow-dom-info" id="shadowDOMInfo"></div>
+          <div class="svg-info" id="svgInfo"></div>
+        </div>
+      </div>
+
+      <!-- Locators Container -->
+      <div class="locators-container" id="locatorsContainer">
+        <div class="section-header">
+          <span class="section-icon">🔍</span>
+          <span class="section-title">Generated Locators</span>
+        </div>
+        <div class="locators-list" id="locatorsList">
+          <div class="empty-state">
+            <span class="empty-icon">👆</span>
+            <p>Click "Start Inspecting" and select an element in the browser</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Branding -->
+      <div class="sidebar-footer">
+        <span class="footer-brand">Naveen Automation Labs</span>
+      </div>
+    </aside>
+
+    <!-- Browser View Area -->
+    <main class="browser-area">
+      <!-- Tab Bar -->
+      <div class="tab-bar" id="tabBar">
+        <div class="tabs-container" id="tabsContainer">
+          <div class="tab active" data-tab-id="tab-1">
+            <span class="tab-title">New Tab</span>
+            <button class="tab-close" title="Close tab">×</button>
+          </div>
+        </div>
+        <button class="new-tab-btn" id="newTabBtn" title="Open new tab">+</button>
+      </div>
+
+      <!-- PO Mode Status Bar -->
+      <div class="po-mode-status-bar" id="poModeStatusBar">
+        <span class="po-status-icon">🎯</span>
+        <span class="po-status-text"><strong>PO Mode Active</strong> - Click on elements to add</span>
+        <span class="po-status-hint">Press ESC to exit</span>
+      </div>
+
+      <!-- URL Bar -->
+      <div class="url-bar">
+        <button class="nav-btn" id="backBtn" title="Go Back">←</button>
+        <button class="nav-btn" id="forwardBtn" title="Go Forward">→</button>
+        <button class="nav-btn" id="refreshBtn" title="Refresh">🔄</button>
+        <div class="url-input-wrapper">
+          <span class="url-icon">🔒</span>
+          <input type="text" class="url-input" id="urlInput" placeholder="Enter URL (e.g., https://example.com)" value="https://www.locator-labs.com" autocomplete="off">
+          <div class="url-suggestions" id="urlSuggestions"></div>
+        </div>
+        <button class="go-btn" id="goBtn">Go</button>
+        <div class="po-mode-controls">
+          <button class="po-mode-btn" id="poModeBtn" title="Page Object Mode - Click elements to auto-add best locators">
+            <span class="po-mode-icon">PO</span>
+          </button>
+          <button class="po-mode-settings-btn" id="poModeSettingsBtn" title="PO Mode Settings">
+            <span class="settings-icon">⚙️</span>
+          </button>
+        </div>
+        <button class="devtools-btn" id="devToolsBtn" title="Open DevTools">🛠️</button>
+      </div>
+
+      <!-- Webview Container -->
+      <div class="webview-container" id="webviewContainer">
+        <webview id="webview-tab-1" class="tab-webview active" src="https://www.locator-labs.com" allowpopups></webview>
+      </div>
+    </main>
+  </div>
+
+  <!-- Page Object Modal -->
+  <div class="po-modal-overlay" id="poModal">
+    <div class="po-modal">
+      <div class="po-modal-header">
+        <h3 class="po-modal-title">Generate Page Object</h3>
+        <button class="po-modal-close" id="poModalClose" title="Close">×</button>
+      </div>
+      <div class="po-modal-body">
+        <div class="po-form-group">
+          <label class="po-form-label" for="poPageName">Page Name *</label>
+          <input type="text" class="po-form-input" id="poPageName" placeholder="e.g., LoginPage, HomePage" autocomplete="off">
+        </div>
+        <div class="po-form-group">
+          <label class="po-form-label" for="poFrameworkSelect">Framework & Language</label>
+          <select class="po-form-select" id="poFrameworkSelect">
+            <optgroup label="Playwright">
+              <option value="playwright-ts" selected>Playwright - TypeScript</option>
+              <option value="playwright-js">Playwright - JavaScript</option>
+              <option value="playwright-python">Playwright - Python</option>
+            </optgroup>
+            <optgroup label="Selenium">
+              <option value="selenium-java">Selenium - Java</option>
+              <option value="selenium-python">Selenium - Python</option>
+            </optgroup>
+            <optgroup label="Cypress">
+              <option value="cypress-js">Cypress - JavaScript</option>
+              <option value="cypress-ts">Cypress - TypeScript</option>
+            </optgroup>
+            <optgroup label="Other Frameworks">
+              <option value="webdriverio">WebdriverIO</option>
+              <option value="robot">Robot Framework</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="po-form-group">
+          <div class="po-elements-header">
+            <label class="po-form-label" id="poSelectedCount">Elements (0)</label>
+            <div class="po-elements-actions">
+              <button class="po-action-btn" id="poSelectAll">Select All</button>
+              <button class="po-action-btn" id="poDeselectAll">Deselect All</button>
+              <button class="po-action-btn danger" id="poClearAll">Clear All</button>
+            </div>
+          </div>
+          <div class="po-elements-list" id="poElementsList">
+            <!-- Elements will be rendered here dynamically -->
+          </div>
+        </div>
+      </div>
+      <div class="po-modal-footer">
+        <button class="po-btn secondary" id="poModalCancel">Cancel</button>
+        <button class="po-btn primary outline" id="poCopyBtn">📋 Copy to Clipboard</button>
+        <button class="po-btn primary" id="poGenerateBtn">⬇ Download File</button>
       </div>
     </div>
   </div>
 
-  <div class="tabs-container" id="tabsContainer">
-    <button class="new-tab-btn" id="newTabBtn" title="新建标签页">+</button>
+  <!-- PO Mode Settings Modal -->
+  <div class="po-settings-modal-overlay" id="poSettingsModal">
+    <div class="po-settings-modal">
+      <div class="po-settings-modal-header">
+        <h3 class="po-settings-modal-title">PO Mode Settings</h3>
+        <button class="po-settings-modal-close" id="poSettingsModalClose" title="Close">×</button>
+      </div>
+      <div class="po-settings-modal-body">
+        <div class="po-settings-section">
+          <h4 class="po-settings-section-title">
+            <img class="fw-icon" src="https://playwright.dev/img/playwright-logo.svg" alt="Playwright">
+            Playwright Locator Preferences
+          </h4>
+          <p class="po-settings-section-desc">Select which locator types to include and drag to reorder priority (highest priority first)</p>
+          <div class="po-settings-locator-list" id="playwrightLocatorList">
+            <div class="po-settings-locator-item" data-locator="getByRole">
+              <span class="drag-handle">⋮⋮</span>
+              <input type="checkbox" id="pw-getByRole" checked>
+              <label for="pw-getByRole">getByRole</label>
+              <span class="locator-badge best">BEST</span>
+            </div>
+            <div class="po-settings-locator-item" data-locator="getByLabel">
+              <span class="drag-handle">⋮⋮</span>
+              <input type="checkbox" id="pw-getByLabel" checked>
+              <label for="pw-getByLabel">getByLabel</label>
+              <span class="locator-badge best">BEST</span>
+            </div>
+            <div class="po-settings-locator-item" data-locator="getByTestId">
+              <span class="drag-handle">⋮⋮</span>
+              <input type="checkbox" id="pw-getByTestId" checked>
+              <label for="pw-getByTestId">getByTestId</label>
+              <span class="locator-badge best">BEST</span>
+            </div>
+            <div class="po-settings-locator-item" data-locator="getByPlaceholder">
+              <span class="drag-handle">⋮⋮</span>
+              <input type="checkbox" id="pw-getByPlaceholder" checked>
+              <label for="pw-getByPlaceholder">getByPlaceholder</label>
+              <span class="locator-badge good">GOOD</span>
+            </div>
+            <div class="po-settings-locator-item" data-locator="getByText">
+              <span class="drag-handle">⋮⋮</span>
+              <input type="checkbox" id="pw-getByText" checked>
+              <label for="pw-getByText">getByText</label>
+              <span class="locator-badge good">GOOD</span>
+            </div>
+            <div class="po-settings-locator-item" data-locator="ID">
+              <span class="drag-handle">⋮⋮</span>
+              <input type="checkbox" id="pw-ID" checked>
+              <label for="pw-ID">ID (CSS)</label>
+              <span class="locator-badge good">GOOD</span>
+            </div>
+            <div class="po-settings-locator-item" data-locator="CSS">
+              <span class="drag-handle">⋮⋮</span>
+              <input type="checkbox" id="pw-CSS">
+              <label for="pw-CSS">CSS Selector</label>
+              <span class="locator-badge ok">OK</span>
+            </div>
+            <div class="po-settings-locator-item" data-locator="XPath">
+              <span class="drag-handle">⋮⋮</span>
+              <input type="checkbox" id="pw-XPath">
+              <label for="pw-XPath">XPath</label>
+              <span class="locator-badge fragile">FRAGILE</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="po-settings-section">
+          <h4 class="po-settings-section-title">
+            <img class="fw-icon" src="https://selenium.dev/images/selenium_logo_square_green.png" alt="Selenium">
+            Selenium Locator Preferences
+          </h4>
+          <p class="po-settings-section-desc">Select which locator types to include and drag to reorder priority</p>
+          <div class="po-settings-locator-list" id="seleniumLocatorList">
+            <div class="po-settings-locator-item" data-locator="ID">
+              <span class="drag-handle">⋮⋮</span>
+              <input type="checkbox" id="se-ID" checked>
+              <label for="se-ID">By.id</label>
+              <span class="locator-badge best">BEST</span>
+            </div>
+            <div class="po-settings-locator-item" data-locator="Name">
+              <span class="drag-handle">⋮⋮</span>
+              <input type="checkbox" id="se-Name" checked>
+              <label for="se-Name">By.name</label>
+              <span class="locator-badge best">BEST</span>
+            </div>
+            <div class="po-settings-locator-item" data-locator="LinkText">
+              <span class="drag-handle">⋮⋮</span>
+              <input type="checkbox" id="se-LinkText" checked>
+              <label for="se-LinkText">By.linkText</label>
+              <span class="locator-badge good">GOOD</span>
+            </div>
+            <div class="po-settings-locator-item" data-locator="CSS">
+              <span class="drag-handle">⋮⋮</span>
+              <input type="checkbox" id="se-CSS" checked>
+              <label for="se-CSS">By.cssSelector</label>
+              <span class="locator-badge good">GOOD</span>
+            </div>
+            <div class="po-settings-locator-item" data-locator="XPath">
+              <span class="drag-handle">⋮⋮</span>
+              <input type="checkbox" id="se-XPath">
+              <label for="se-XPath">By.xpath</label>
+              <span class="locator-badge ok">OK</span>
+            </div>
+            <div class="po-settings-locator-item" data-locator="ClassName">
+              <span class="drag-handle">⋮⋮</span>
+              <input type="checkbox" id="se-ClassName">
+              <label for="se-ClassName">By.className</label>
+              <span class="locator-badge fragile">FRAGILE</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="po-settings-section">
+          <h4 class="po-settings-section-title">
+            <img class="fw-icon" src="https://www.cypress.io/images/layouts/cypress-logo.svg" alt="Cypress">
+            Cypress Locator Preferences
+          </h4>
+          <p class="po-settings-section-desc">Select which locator types to include and drag to reorder priority</p>
+          <div class="po-settings-locator-list" id="cypressLocatorList">
+            <div class="po-settings-locator-item" data-locator="data-testid">
+              <span class="drag-handle">⋮⋮</span>
+              <input type="checkbox" id="cy-data-testid" checked>
+              <label for="cy-data-testid">data-testid</label>
+              <span class="locator-badge best">BEST</span>
+            </div>
+            <div class="po-settings-locator-item" data-locator="ID">
+              <span class="drag-handle">⋮⋮</span>
+              <input type="checkbox" id="cy-ID" checked>
+              <label for="cy-ID">ID (#id)</label>
+              <span class="locator-badge best">BEST</span>
+            </div>
+            <div class="po-settings-locator-item" data-locator="contains">
+              <span class="drag-handle">⋮⋮</span>
+              <input type="checkbox" id="cy-contains" checked>
+              <label for="cy-contains">cy.contains()</label>
+              <span class="locator-badge good">GOOD</span>
+            </div>
+            <div class="po-settings-locator-item" data-locator="CSS">
+              <span class="drag-handle">⋮⋮</span>
+              <input type="checkbox" id="cy-CSS" checked>
+              <label for="cy-CSS">CSS Selector</label>
+              <span class="locator-badge good">GOOD</span>
+            </div>
+            <div class="po-settings-locator-item" data-locator="XPath">
+              <span class="drag-handle">⋮⋮</span>
+              <input type="checkbox" id="cy-XPath">
+              <label for="cy-XPath">XPath</label>
+              <span class="locator-badge fragile">FRAGILE</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="po-settings-modal-footer">
+        <button class="po-btn secondary" id="poSettingsReset">Reset to Defaults</button>
+        <button class="po-btn primary" id="poSettingsSave">Save Settings</button>
+      </div>
+    </div>
   </div>
 
-  <div class="browser-container" id="browserContainer">
-    <!-- Webviews will be dynamically created here -->
+  <!-- Tour Guide Welcome Modal -->
+  <div class="tour-welcome-overlay" id="tourWelcomeOverlay">
+    <div class="tour-welcome-modal">
+      <img class="tour-welcome-icon" src="../assets/icon.ico" alt="Locator Labs">
+      <h2 class="tour-welcome-title">Welcome to Locator Labs!</h2>
+      <p class="tour-welcome-desc">
+        Learn how to inspect elements, generate locators, and build page objects
+        with our quick interactive tour.
+      </p>
+      <div class="tour-welcome-buttons">
+        <button class="tour-welcome-btn skip" id="tourSkipBtn">Skip Tour</button>
+        <button class="tour-welcome-btn start" id="tourStartBtn">Start Tour</button>
+      </div>
+    </div>
   </div>
 
-  <div class="error-message" id="errorMessage"></div>
-
-  <div class="status-bar">
-    <div class="status-text" id="statusText">就绪</div>
-    <div id="pageTitle"></div>
+  <!-- Tour Guide Elements -->
+  <div class="tour-spotlight" id="tourSpotlight"></div>
+  <div class="tour-tooltip" id="tourTooltip">
+    <div class="tour-header">
+      <div class="tour-icon" id="tourIcon">🎯</div>
+      <div class="tour-title" id="tourTitle">Step Title</div>
+    </div>
+    <div class="tour-content" id="tourContent">
+      Step description goes here.
+    </div>
+    <div class="tour-progress" id="tourProgress"></div>
+    <div class="tour-footer">
+      <div class="tour-step-info" id="tourStepInfo">Step 1 of 7</div>
+      <div class="tour-buttons">
+        <button class="tour-btn skip" id="tourSkipStepBtn">Skip</button>
+        <button class="tour-btn prev" id="tourPrevBtn">Previous</button>
+        <button class="tour-btn next" id="tourNextBtn">Next</button>
+      </div>
+    </div>
   </div>
 
+  <!-- Tour Help Button (to restart tour) -->
+  <button class="tour-help-btn" id="tourHelpBtn" title="Start Tour">?</button>
+
+  <script src="locator-generator.js"></script>
   <script src="renderer.js"></script>
 </body>
 </html>
-
